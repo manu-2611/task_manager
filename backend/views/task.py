@@ -10,3 +10,10 @@ class TaskViewSet(viewsets.ModelViewSet):
         if self.action in ['list', 'retrieve']:
             return [permissions.AllowAny()]
         return [permissions.IsAuthenticated()]
+
+    def get_queryset(self):
+        queryset = Task.objects.all()
+        completed = self.request.query_params.get('completed')
+        if completed is not None:
+            queryset = queryset.filter(completed=completed.lower() == 'true')
+        return queryset
